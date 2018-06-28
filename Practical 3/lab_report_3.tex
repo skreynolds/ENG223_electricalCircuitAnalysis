@@ -1,0 +1,431 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements 
+\usepackage{enumerate} % Required for the enumerate function
+\usepackage[americanvoltages,siunitx]{circuitikz} % Required for the drawing of circuit diagrams
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xfrac}
+\usepackage{float}
+\usepackage{enumitem}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Electrical Circuit Analysis \\ Practical 3 - High Pass Filters \\ ENG223} % Title
+
+\author{Shane \textsc{Reynolds}} % Author name
+
+\date{\today} % Date for the report
+
+\begin{document}
+
+\maketitle % Insert the title, author and date
+
+\begin{center}
+\begin{tabular}{l r}
+Date Performed: & September 8, 2015 \\ % Date the experiment was performed
+Instructor: & Dr Kamal Debnath % Instructor/supervisor
+\end{tabular}
+\end{center}
+
+% If you wish to include an abstract, uncomment the lines below
+% \begin{abstract}
+% Abstract text
+% \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Objective}
+
+To develop an understanding of high-pass filter operation through the derivation of a theoretical transfer function and theoretical cut-off frequency. Theoretical estimates will be tested through the collection of experimental evidence.
+
+\subsection{Background}
+\label{definitions}
+
+\begin{description}
+\item[Transfer function for RC high pass filter]
+Figure 1 shows an RC circuit with the output voltage taken over the resistor. This set-up is called a high-pass filter. This type of filter allows high frequency voltage signals to pass through from input to output, however, low frequency voltage signals are attenuated.
+
+%Circuit Diagram
+\begin{figure}[H]
+	\centering
+	\ctikzset {bipoles/length=.8cm}
+	\begin{circuitikz}[scale=0.6]
+		
+		\draw (0,0)
+		to [sV, l=$V_{in}$] (0,4)
+		to [C, l=$C$] (4,4)
+		to [R, v^<=$R$] (4,0)
+		to [short] (0,0)
+		;
+		
+	\end{circuitikz}
+	\captionof{figure}{Series RC circuit with Sinusoidal Input Voltage}
+	\label{fig:figure2}
+\end{figure}
+
+Consider the RC circuit in figure 1 with input voltage $V_{in} = V_m \cos(\omega t - \phi)$. In general, to calculate the output voltage, $V_{out}$, we exploit impedance models in the circuit's steady state. The impedance of the resistor is given by $Z_R = R$ and the impedance of the capacitor is given by $Z_C = \frac{1}{j \omega C}$, where $\omega$ is the frequency of the input voltage. Since the elements are in series, we can use the voltage divider arrangement:
+
+\begin{align*}
+	V_{out} &= \frac{Z_R}{Z_C + Z_R} V_{in} \\
+	\frac{V_{out}}{V_{in}} &= \frac{Z_R}{Z_C + Z_R} \\
+	& = \frac{R}{R + \frac{1}{j \omega C}} \\
+	&= \frac{R}{R - j\frac{1}{\omega C}} \\
+\end{align*}
+
+This is the transfer function and is written as:
+
+\begin{align}
+	H(\omega) = \frac{R}{R - j\frac{1}{\omega C}}
+\end{align}
+
+This expression can be written in phasor form as follows:
+
+\begin{align*}
+	H(\omega) &= \frac{R}{\sqrt{R^2 + (\frac{1}{\omega C})^2} \angle \arctan(-\frac{\frac{1}{\omega C}}{R})} \\
+	&= \frac{R}{\sqrt{R^2 + (\frac{1}{\omega C})^2} \angle \arctan(-\frac{1}{\omega RC})}
+\end{align*}
+
+Hence, the magnitude of the transfer function is given by:
+
+\begin{align}
+	|H(\omega)| = \frac{R}{\sqrt{R^2 + (\frac{1}{\omega C})^2}}
+\end{align}
+
+And the phase angle of the transfer function is given by:
+
+\begin{align}
+	\angle H(\omega) = - \arctan (-\frac{1}{\omega RC})
+\end{align}
+
+A plot of both the magnitude of the transfer function and the phase angle can be seen in figure 2.
+
+\begin{center}
+	\begin{figure}[H]
+		\begin{minipage}{0.6\textwidth}
+			\includegraphics[scale=0.8]{bode1}
+			\captionof{figure}{Theoretical bode plots for high pass RC filter}
+		\end{minipage}
+	\end{figure}
+\end{center}
+
+\item[Cut-off frequency for RC high pass filter]
+The definition of cut-off frequency that has been widely used by electrical engineers is the frequency for which the transfer function magnitude is decreased by the factor of $\frac{1}{\sqrt{2}}$ from its maximum value. That is:
+
+\begin{align*}
+	|H(\omega_c)| = \frac{1}{\sqrt{2}}H_{max}
+\end{align*}
+
+For a high pass RC circuit, the magnitude of the transfer function is at its maximum when $\omega \rightarrow \infty$, that is $H_{max} = 1$. Hence, setting $|H(\omega_c)|$ equal to $\frac{1}{\sqrt{2}}$ we get:
+
+\begin{align*}
+	\frac{R}{\sqrt{R^2 + (\frac{1}{\omega C})^2}} &= \frac{1}{\sqrt{2}} \\
+	\frac{R^2}{R^2 + (\frac{1}{\omega C})^2} &= \frac{1}{2} \\
+	2R^2 &= R^2 + (\frac{1}{\omega C})^2 \\
+	R^2 &= (\frac{1}{\omega C})^2 \\
+	R &= \frac{1}{\omega C} \\
+\end{align*}
+
+Hence, for a high pass RC circuit, the cut off frequency is given by:
+
+\begin{align}
+	\omega_c = \frac{1}{RC}
+\end{align}
+
+Now, suppose the RC circuit was constructed using a 330 $\si{\ohm}$ resistor and a 0.47 $\si{\micro \farad}$ capacitor. The cut off frequency in radians per second would be:
+
+\begin{align*}
+	\omega_c &= \frac{1}{RC} \\
+	&= \frac{1}{330 \times 0.47e^{-6}} \\
+	&= 6447.45 \si{\sfrac{\radian}{\second}} \\
+	&= 1026.14 \si{\hertz}
+\end{align*}
+
+
+\item[Transfer function for RL high pass filter]
+Figure 2 shows an RL circuit with the output voltage taken over the inductor. This set-up is called a high-pass filter. This type of filter allows high frequency voltage signals to pass through from input to output, however, low frequency voltage signals are attenuated.
+
+%Circuit Diagram
+\begin{figure}[H]
+	\centering
+	\ctikzset {bipoles/length=.8cm}
+	\begin{circuitikz}[scale=0.6]
+		
+		\draw (0,0)
+		to [sV, l=$V_{in}$] (0,4)
+		to [R, l=$R$] (4,4)
+		to [L, v^<=$L$] (4,0)
+		to [short] (0,0)
+		;
+		
+	\end{circuitikz}
+	\captionof{figure}{Series RL circuit with Sinusoidal Input Voltage}
+	\label{fig:figure2}
+\end{figure}
+
+Consider the RL circuit in figure 1 with input voltage $V_{in} = V_m \cos(\omega t - \phi)$. In general, to calculate the output voltage, $V_{out}$, we exploit impedance models in the circuit's steady state. The impedance of the resistor is given by $Z_R = R$ and the impedance of the inductor is given by $Z_L = j \omega L$, where $\omega$ is the frequency of the input voltage. Since the elements are in series, we can use the voltage divider arrangement:
+
+\begin{align*}
+V_{out} &= \frac{Z_L}{Z_L + Z_R} V_{in} \\
+\frac{V_{out}}{V_{in}} &= \frac{Z_L}{Z_L + Z_R} \\
+& = \frac{j \omega L}{1 + j \omega L} \\
+& = \frac{1}{1 + \frac{R}{j \omega L}}
+\end{align*}
+
+This is the transfer function and is written as:
+
+\begin{align}
+H(\omega) = \frac{1}{1 - j \frac{R}{\omega L}}
+\end{align}
+
+This expression can be written in phasor form as follows:
+
+\begin{align*}
+H(\omega) &= \frac{1}{\sqrt{1 + (\frac{R}{\omega L})^2} \angle \arctan(-\frac{R}{\omega L})} \\
+\end{align*}
+
+Hence, the magnitude of the transfer function is given by:
+
+\begin{align}
+|H(\omega)| = \frac{1}{\sqrt{1 + (\frac{R}{\omega L})^2}}
+\end{align}
+
+And the phase angle of the transfer function is given by:
+
+\begin{align}
+\angle H(\omega) = - \arctan (-\frac{R}{\omega L})
+\end{align}
+
+A plot of both the magnitude of the transfer function and the phase angle can be seen in figure 4.
+
+\begin{center}
+	\begin{figure}[H]
+		\begin{minipage}{0.6\textwidth}
+			\includegraphics[scale=0.8]{bode2}
+			\captionof{figure}{Theoretical bode plots for low pass RL filter}
+		\end{minipage}
+	\end{figure}
+\end{center}
+
+\item[Cut-off frequency for RL high pass filter]
+The definition of cut-off frequency that has been widely used by electrical engineers is the frequency for which the transfer function magnitude is decreased by the factor of $\frac{1}{\sqrt{2}}$ from its maximum value. That is:
+
+\begin{align*}
+|H(\omega_c)| = \frac{1}{\sqrt{2}}H_{max}
+\end{align*}
+
+For a high pass RL circuit, the magnitude of the transfer function is at its maximum when $\omega \rightarrow \infty$, that is $H_{max} = 1$. Hence, setting $|H(\omega_c)|$ equal to $\frac{1}{\sqrt{2}}$ we get:
+
+\begin{align*}
+\frac{1}{\sqrt{1 + (\frac{R}{\omega_c L})^2}} &= \frac{1}{\sqrt{2}} \\
+1 + (\frac{R}{\omega_c L})^2 &= 2 \\
+(\frac{R}{\omega_c L})^2 &= 1 \\
+\frac{R}{\omega_c L} &= 1
+\end{align*}
+
+Hence, for a high pass RL circuit, the cut off frequency is given by:
+
+\begin{align}
+\omega_c &= \frac{R}{L}
+\end{align}
+
+Now, suppose the RL circuit was constructed using a 75 $\si{\ohm}$ resistor and a 2.4 $\si{\milli \henry}$ inductor. The cut off frequency in radians per second would be:
+
+\begin{align*}
+	\omega_c &= \frac{75}{2.4e^{-3}} \\
+	&= 31250 \si{\sfrac{\radian}{\second}}
+\end{align*}
+
+Hence, the cutoff frequency in Hertz is:
+
+\begin{align*}
+	f_c = 4973.59 \si{\hertz}
+\end{align*}
+
+\end{description} 
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{Experimental Circuit Set-up, Results and Calculations}
+
+The simple series RC circuit was set up as shown in figure 4. The input voltage, $V_{in}$, was a sinusoidal voltage source generated by the function generator. The output voltage, $V_{out}$, was measured across the capacitor.
+
+%Circuit Diagram
+\begin{figure}[H]
+\centering
+\ctikzset {bipoles/length=.8cm}
+\begin{circuitikz}[scale=0.6]
+		
+		\draw (0,0)
+		to [sV, l=$V_{in}$] (0,4)
+		to [C, l=0.47\si{\micro\farad}] (4,4)
+		to [R, v^<=330\si{\ohm}] (4,0)
+		to [short] (0,0)
+		;
+		
+\end{circuitikz}
+\captionof{figure}{Series RC circuit with Sinusoidal Input Voltage}
+\label{fig:figure2}
+\end{figure}
+
+The input voltage, $V_{in}$, was set to 4V peak to peak. Both the output voltage, $V_{out}$, and the time difference between the input signal peak and output signal peak, $|\Delta X|$, were measured. The gain and phase shift were calculated using the formulas from practical 1. The empirical data and calculated values can be seen in table 1.
+ 
+\begin{figure}[H]
+\centering
+\begin{tabular}{ | r | r | r | r | r | r | }
+	\hline
+	frequency ($f$) & $V_{in}$ & $V_{out}$ & $|\Delta X|$ & Gain $\si{\decibel}$ & Phase Shift $\si{\degree}$ \\ \hline
+	10 \si{\hertz} & 4 \si{\volt} & 44 \si{\milli\volt} & 24.40 \si{\milli\second} & -39.172 \si{\decibel} & 87.84 \si{\degree}\\ \hline
+	20 \si{\hertz} & 4 \si{\volt} & 88 \si{\milli\volt} & 12.80 \si{\milli\second} & -33.151 \si{\decibel} & 92.16 \si{\degree}\\ \hline
+	50 \si{\hertz} & 4 \si{\volt} & 224 \si{\milli\volt} & 5.04 \si{\milli\second} & -25.036 \si{\decibel} & 90.72 \si{\degree}\\ \hline
+	100 \si{\hertz} & 4 \si{\volt} & 400 \si{\milli\volt} & 2.32 \si{\milli\second} & -20.000 \si{\decibel} & 83.52 \si{\degree}\\ \hline
+	200 \si{\hertz} & 4 \si{\volt} & 920 \si{\milli\volt} & 1.08 \si{\milli\second} & -12.760 \si{\decibel} & 77.76 \si{\degree}\\ \hline
+	500 \si{\hertz} & 4 \si{\volt} & 1.92 \si{\volt} & 3.68 \si{\micro\second} & -6.375 \si{\decibel} & 66.24 \si{\degree}\\ \hline
+	1000 \si{\hertz} & 4 \si{\volt} & 2.80 \si{\volt} & 136 \si{\micro\second} & -3.098 \si{\decibel} & 48.96 \si{\degree}\\ \hline
+	2000 \si{\hertz} & 4 \si{\volt} & 3.68 \si{\volt} & 44 \si{\micro\second} & -0.724 \si{\decibel} & 31.68 \si{\degree}\\ \hline
+	4000 \si{\hertz} & 4 \si{\volt} & 4 \si{\volt} & 0 \si{\micro\second} & 0 \si{\decibel} & 0 \si{\degree}\\ \hline
+	5000 \si{\hertz} & 4 \si{\volt} & 4 \si{\volt} & 0 \si{\micro\second} & 0 \si{\decibel} & 0 \si{\degree}\\ \hline
+	8000 \si{\hertz} & 4 \si{\volt} & 4 \si{\volt} & 0 \si{\micro\second} & 0 \si{\decibel} & 0 \si{\degree}\\ \hline
+	10000 \si{\hertz} & 4 \si{\volt} & 4 \si{\volt} & 0 \si{\micro\second} & 0 \si{\decibel} & 0 \si{\degree}\\ \hline
+\end{tabular}
+\captionof{table}{Output characteristics for high pass RC circuit}
+\end{figure}
+
+By adjusting the frequency of the function generator until the output voltage had an amplitude of 2.828 $\si{V_{pp}}$, the cut off frequency was measured. The measured value was:
+
+\begin{align*}
+	f_c = 1000 \si{\hertz}
+\end{align*}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A simple RL circuit was set up as shown in figure 5. The input voltage, $V_{in}$, was a sinusoidal voltage source generated by the function generator. The output voltage, $V_{out}$, was measured across the resistor.
+
+%Circuit Diagram
+\begin{figure}[H]
+	\centering
+	\ctikzset {bipoles/length=.8cm}
+	\begin{circuitikz}[scale=0.6]
+		
+		\draw (0,0)
+		to [sV, l=$V_{in}$] (0,4)
+		to [R, l=75\si{\ohm}] (4,4)
+		to [L, v^<=2.4\si{\milli\henry}] (4,0)
+		to [short] (0,0)
+		;
+		
+	\end{circuitikz}
+	\captionof{figure}{Series RL circuit with Sinusoidal Input Voltage}
+	\label{fig:figure2}
+\end{figure}
+
+The input voltage, $V_{in}$, was set to 4V peak to peak. Both the output voltage, $V_{out}$, and the time difference between the input signal peak and output signal peak, $|\Delta X|$, were measured. The gain and phase shift were calculated using the formulas from practical 1. The empirical data and calculated values can be seen in table 2.
+
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{ | r | r | r | r | r | r | }
+		\hline
+		frequency ($f$) & $V_{in}$ & $V_{out}$ & $|\Delta X|$ & Gain $\si{\decibel}$ & Phase Shift $\si{\degree}$ \\ \hline
+		10 \si{\hertz} & 4 \si{\volt} & 32 \si{\milli\volt} & 8 \si{\milli\second} & -41.938 \si{\decibel} & 28.80 \si{\degree}\\ \hline
+		20 \si{\hertz} & 4 \si{\volt} & 37.6 \si{\milli\volt} & 5.2 \si{\milli\second} & -40.537 \si{\decibel} & 37.44 \si{\degree}\\ \hline
+		50 \si{\hertz} & 4 \si{\volt} & 61.6 \si{\milli\volt} & 3.52 \si{\milli\second} & -36.249 \si{\decibel} & 63.18 \si{\degree}\\ \hline
+		100 \si{\hertz} & 4 \si{\volt} & 108 \si{\milli\volt} & 2.4 \si{\milli\second} & -31.372 \si{\decibel} & 86.40 \si{\degree}\\ \hline
+		200 \si{\hertz} & 4 \si{\volt} & 196 \si{\milli\volt} & 1.04 \si{\milli\second} & -26.196 \si{\decibel} & 74.88 \si{\degree}\\ \hline
+		500 \si{\hertz} & 4 \si{\volt} & 472 \si{\milli\volt} & 432 \si{\micro\second} & -18.562 \si{\decibel} & 77.76 \si{\degree}\\ \hline
+		1000 \si{\hertz} & 4 \si{\volt} & 940 \si{\milli\volt} & 204 \si{\micro\second} & -12.578 \si{\decibel} & 73.44 \si{\degree}\\ \hline
+		2000 \si{\hertz} & 4 \si{\volt} & 1.8 \si{\volt} & 90 \si{\micro\second} & -6.93 \si{\decibel} & 64.80 \si{\degree}\\ \hline
+		4000 \si{\hertz} & 4 \si{\volt} & 2.76 \si{\volt} & 36 \si{\micro\second} & -3.223 \si{\decibel} & 51.84 \si{\degree}\\ \hline
+		5000 \si{\hertz} & 4 \si{\volt} & 3 \si{\volt} & 24 \si{\micro\second} & -2.498 \si{\decibel} & 43.20 \si{\degree}\\ \hline
+		8000 \si{\hertz} & 4 \si{\volt} & 3.48 \si{\volt} & 12 \si{\micro\second} & -1.209 \si{\decibel} & 34.56 \si{\degree}\\ \hline
+		10000 \si{\hertz} & 4 \si{\volt} & 3.60 \si{\volt} & 8.8 \si{\micro\second} & -0.915 \si{\decibel} & 31.68 \si{\degree}\\ \hline
+	\end{tabular}
+	\captionof{table}{Output characteristics for low pass RL circuit}
+\end{figure}
+
+By adjusting the frequency of the function generator until the output voltage had an amplitude of 2.828 $\si{V_{pp}}$, the cut off frequency was measured. The measured value was:
+
+\begin{align*}
+f_c = 4500 \si{\hertz}
+\end{align*}
+
+\newpage
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Results and Conclusions}
+
+The gain and phase angle calculations made for the empirical data shown in tables 1 and 2 for both the RC and RL circuits, respectively, were plotted over the theoretical plots. This can be seen in figure 7 for the RC circuit and figure 8 for the RL circuit.
+
+\begin{center}
+	\begin{figure}[H]
+		\begin{minipage}{0.6\textwidth}
+			\includegraphics[scale=0.8]{bode3}
+			\captionof{figure}{Empirical data super-imposed on theoretical data for low pass RC filter}
+		\end{minipage}
+	\end{figure}
+\end{center}
+
+\begin{center}
+	\begin{figure}[H]
+		\begin{minipage}{0.6\textwidth}
+			\includegraphics[scale=0.8]{bode4}
+			\captionof{figure}{Empirical data super-imposed on theoretical data for low pass RL filter}
+		\end{minipage}
+	\end{figure}
+\end{center}
+
+From figures 7 and 8 we can see that the empirical phase angle data does not fit the theoretical data well. Additionally, the empirical data for the magnitude of the RC filter attenuates early, whereas the data for the RL filter has a lagging attenuation. This is most likely due to erroneous results obtained when the practical was undertaken. Evidence supporting this is provided from the cut off frequencies, which appear to have been measured correctly. Finally, the data on the phase plot for the RL filter appears to be significantly deviate from the theoretical plot.
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
